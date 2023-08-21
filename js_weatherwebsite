@@ -1,0 +1,54 @@
+const input=document.querySelector('.input')
+const searchButton=document.getElementById('searchButton')
+const weatherImg=document.querySelector('.weatherImage')
+const humidity=document.getElementById('humidity')
+const windSpeed=document.getElementById('windSpeed')
+const temp=document.querySelector('.temp')
+const desc=document.querySelector('.desc')
+const notFound=document.querySelector('.notFound')
+const weatherBody=document.querySelector('.weatherBody')
+
+
+async function checkWeather(city) {
+    const api = "b6e4b74563ce1598db832f5ff8a1a5e8";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api}`;
+    const weatherData = await fetch(url).then(response => response.json());
+    if(weatherData.cod==='404'){
+        notFound.style.display="flex"
+        weatherBody.style.display="none";
+        console.log("error")
+        return;
+
+    }
+    notFound.style.display="none"
+    weatherBody.style.display="flex";
+    const temperature = Math.round(weatherData.main.temp - 273.15);
+    temp.innerHTML = `${temperature} °C`;
+    desc.innerHTML = `${weatherData.weather[0].description}`;
+    humidity.innerHTML = `${weatherData.main.humidity}%`;
+    windSpeed.innerHTML = `${weatherData.wind.speed}Km/h`;
+    
+    
+   
+    switch (weatherData.weather[0].main) {
+        case 'Clouds':
+          weatherImg.src = 'IMAGE/cloud.jpg';
+          break;
+        case 'Clear':
+          weatherImg.src = 'IMAGE/clear.jpg';
+          break;
+        case 'Rain':
+          weatherImg.src = 'IMAGE/rain.jpg';
+          break;
+        case 'Mist':
+          weatherImg.src = 'IMAGE/mist.jpg';
+          break;
+        case 'Snow':
+          weatherImg.src = 'IMAGE/snow.jpg';
+          break;
+      }
+  }
+  searchButton.addEventListener('click',() =>{
+    checkWeather(input.value)
+})
+  
